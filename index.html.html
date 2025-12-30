@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LuntianHub | Guardian Access</title>
+    <link rel="icon" type="image/png" href="images/lwowhite.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #000000; color: #e2e8f0; overflow: hidden; }
+        .font-tech { font-family: 'Rajdhani', sans-serif; }
+        .neon-text { text-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+        .neon-border { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); }
+        .pass-gradient { background: linear-gradient(135deg, #064e3b 0%, #000000 100%); }
+        .admin-gradient { background: linear-gradient(135deg, #b91c1c 0%, #000000 100%); }
+        .glass-nav { background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(15px); border-top: 1px solid rgba(255,255,255,0.1); }
+        .slide-in { animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .scan-line { width: 100%; height: 2px; background: #10b981; position: absolute; top: 0; left: 0; animation: scan 2s infinite linear; box-shadow: 0 0 10px #10b981; }
+        @keyframes scan { 0% { top: 0; } 50% { top: 100%; } 100% { top: 0; } }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .view-section { position: absolute; inset: 0; transition: transform 0.5s ease-in-out; }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+    <!-- VIEW 1: LOGIN SCREEN -->
+    <section id="view-login" class="view-section z-50 bg-black flex flex-col justify-center items-center p-6">
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1550684848-fac1c5b4e853?ixlib=rb-4.0.3&auto=format&fit=crop&w=1770&q=80')] bg-cover opacity-20"></div>
+        
+        <div class="relative z-10 w-full max-w-sm text-center">
+            <div class="w-20 h-20 bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-6 neon-border">
+                <img src="images/logo.png" class="h-12 w-auto brightness-200">
+            </div>
+            <h1 class="font-tech font-bold text-4xl text-white tracking-widest mb-2">LUNTIAN<span class="text-emerald-500">HUB</span></h1>
+            <p class="text-emerald-400/60 text-xs uppercase tracking-[0.3em] mb-10">Guardian Secure Access</p>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div class="relative">
+                    <i class="fas fa-id-badge absolute left-4 top-3.5 text-emerald-700"></i>
+                    <input type="text" id="login-id" placeholder="Guardian ID" class="w-full bg-slate-900/80 border border-slate-800 text-emerald-400 pl-12 pr-4 py-3 rounded-lg focus:outline-none focus:border-emerald-500 transition font-tech text-lg placeholder-slate-600">
+                </div>
+                <div class="relative">
+                    <i class="fas fa-fingerprint absolute left-4 top-3.5 text-emerald-700"></i>
+                    <input type="password" id="login-pass" placeholder="Passcode" class="w-full bg-slate-900/80 border border-slate-800 text-emerald-400 pl-12 pr-4 py-3 rounded-lg focus:outline-none focus:border-emerald-500 transition font-tech text-lg placeholder-slate-600">
+                </div>
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 text-black font-bold py-4 rounded-lg font-tech text-xl tracking-wider transition shadow-[0_0_20px_rgba(16,185,129,0.3)] mt-4">
+                    AUTHENTICATE
+                </button>
+            </form>
+            
+            <p class="mt-8 text-[10px] text-slate-600">
+                Authorized Personnel Only.<br>
+                Default Admin ID: <strong>COMMANDER</strong> / Pass: <strong>LUNTIAN2030</strong>
+            </p>
+        </div>
+    </section>
+
+    <!-- VIEW 2: MAIN APP INTERFACE -->
+    <div id="app-interface" class="view-section hidden opacity-0 transition-opacity duration-500 flex flex-col h-full bg-black">
+        
+        <!-- Top Bar -->
+        <header class="px-6 py-4 flex justify-between items-center bg-black/90 backdrop-blur-md sticky top-0 z-30 border-b border-emerald-900/30">
+            <div class="flex items-center gap-3">
+                <div id="avatar-container" class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-cyan-600 p-0.5">
+                    <img src="" id="user-avatar" class="rounded-full w-full h-full">
+                </div>
+                <div>
+                    <h3 class="font-tech text-white text-lg leading-none" id="display-name">GUARDIAN</h3>
+                    <p class="text-[10px] text-emerald-500 uppercase tracking-wider" id="display-id">UNIT: ACTIVE</p>
+                </div>
+            </div>
+            <button onclick="handleLogout()" class="text-slate-400 hover:text-red-400">
+                <i class="fas fa-sign-out-alt text-lg"></i>
+            </button>
+        </header>
+
+        <!-- VIEW CONTAINER -->
+        <main id="main-view" class="flex-1 overflow-y-auto no-scrollbar relative">
+            
+            <!-- TAB 1: FEED (Social) -->
+            <div id="tab-feed" class="p-4 space-y-6 slide-in pb-24">
+                <!-- Feed is populated by JS -->
+                <div id="feed-container"></div>
+            </div>
+
+            <!-- TAB 2: ECO-PASS (Digital ID) -->
+            <div id="tab-pass" class="p-6 slide-in hidden flex flex-col items-center justify-center min-h-full pb-24">
+                <h2 class="text-emerald-400 font-tech uppercase tracking-widest mb-6 text-sm">Digital Identity</h2>
+                <div class="w-full max-w-sm pass-gradient rounded-2xl p-1 relative overflow-hidden neon-border group">
+                    <div class="bg-black/90 rounded-xl p-6 relative overflow-hidden h-full">
+                        <div class="flex justify-between items-start mb-6 relative z-10">
+                            <img src="images/logo.png" class="h-8 w-auto">
+                            <span class="bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 text-[10px] font-bold px-2 py-1 rounded font-tech">ACTIVE</span>
+                        </div>
+                        <div class="text-center mb-6 relative z-10">
+                            <div class="w-40 h-40 bg-white p-2 mx-auto rounded-lg mb-4 relative overflow-hidden">
+                                <div id="qrcode"></div>
+                                <div class="scan-line"></div>
+                            </div>
+                            <p class="text-slate-400 text-[10px] uppercase tracking-widest">Official Guardian Badge</p>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 border-t border-emerald-900/50 pt-4 relative z-10">
+                            <div><p class="text-[9px] text-slate-500 uppercase">Name</p><p class="text-white font-tech text-lg truncate" id="card-name">--</p></div>
+                            <div class="text-right"><p class="text-[9px] text-slate-500 uppercase">ID</p><p class="text-slate-300 font-tech text-lg truncate" id="card-id">--</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: ADMIN CONSOLE (Restricted) -->
+            <div id="tab-admin" class="p-4 slide-in hidden pb-24">
+                
+                <!-- Section 1: Post to Feed -->
+                <div class="bg-slate-900/80 border border-red-900/30 rounded-xl p-4 mb-6">
+                    <h2 class="text-red-400 font-tech text-lg mb-4 flex items-center gap-2"><i class="fas fa-bullhorn"></i> COMMAND FEED</h2>
+                    <form onsubmit="adminPost(event)">
+                        <textarea id="admin-msg" rows="3" placeholder="Broadcast alert or update..." class="w-full bg-black/50 border border-slate-700 rounded-lg p-3 text-white text-sm mb-3 focus:border-red-500 outline-none"></textarea>
+                        <div class="flex justify-between items-center">
+                            <select id="msg-type" class="bg-black/50 border border-slate-700 text-slate-300 text-xs rounded px-2 py-1">
+                                <option value="Alert">Alert (Red)</option>
+                                <option value="Update">Update (Green)</option>
+                                <option value="Intel">Intel (Blue)</option>
+                            </select>
+                            <button type="submit" class="bg-red-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-red-700">POST</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Section 2: Manage Guardians -->
+                <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4">
+                    <h2 class="text-emerald-400 font-tech text-lg mb-4 flex items-center gap-2"><i class="fas fa-users-cog"></i> MANAGE GUARDIANS</h2>
+                    
+                    <!-- Add User Form -->
+                    <form onsubmit="addGuardian(event)" class="grid grid-cols-2 gap-2 mb-6 border-b border-slate-800 pb-6">
+                        <input type="text" id="new-name" placeholder="Full Name" required class="col-span-2 bg-black/50 border border-slate-700 rounded p-2 text-white text-xs">
+                        <input type="text" id="new-id" placeholder="ID (e.g. LW-02)" required class="bg-black/50 border border-slate-700 rounded p-2 text-white text-xs uppercase">
+                        <input type="text" id="new-pass" placeholder="Passcode" required class="bg-black/50 border border-slate-700 rounded p-2 text-white text-xs">
+                        <button type="submit" class="col-span-2 bg-emerald-600 text-white py-2 rounded font-bold text-xs hover:bg-emerald-500">ADD GUARDIAN</button>
+                    </form>
+
+                    <!-- User List -->
+                    <div class="space-y-2" id="guardian-list">
+                        <!-- JS renders list here -->
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- BOTTOM NAVIGATION -->
+        <nav class="glass-nav h-20 fixed bottom-0 w-full z-40 flex justify-around items-center px-2 pb-2">
+            <button onclick="switchTab('feed')" id="btn-feed" class="flex flex-col items-center gap-1 p-2 text-emerald-400 transition">
+                <i class="fas fa-stream text-xl"></i><span class="text-[10px] font-bold">Feed</span>
+            </button>
+            
+            <button onclick="switchTab('pass')" class="w-14 h-14 bg-emerald-600 rounded-full flex items-center justify-center text-white shadow-[0_0_20px_rgba(16,185,129,0.5)] -mt-8 border-4 border-black hover:scale-105 transition">
+                <i class="fas fa-ticket-alt text-xl"></i>
+            </button>
+
+            <!-- Admin Button (Shows only for Admin) -->
+            <button onclick="switchTab('admin')" id="btn-admin" class="hidden flex flex-col items-center gap-1 p-2 text-slate-500 hover:text-red-400 transition">
+                <i class="fas fa-shield-alt text-xl"></i><span class="text-[10px] font-bold">Admin</span>
+            </button>
+            
+            <!-- Standard Tools (Shows for others) -->
+            <button onclick="alert('Scanner Tool Loading...')" id="btn-tools" class="flex flex-col items-center gap-1 p-2 text-slate-500 hover:text-emerald-400 transition">
+                <i class="fas fa-th-large text-xl"></i><span class="text-[10px] font-bold">Tools</span>
+            </button>
+        </nav>
+
+    </div>
+
+    <script>
+        // --- DATABASE MOCKUP (LocalStorage) ---
+        const defaultDB = {
+            users: [
+                { name: "Commander Moises", id: "COMMANDER", pass: "LUNTIAN2030", role: "admin" },
+                { name: "Alpha Leader", id: "LW-001", pass: "1234", role: "guardian" }
+            ],
+            posts: [
+                { author: "Luntian HQ", type: "Alert", msg: "Welcome to LuntianHub. Secure channel active.", time: "System" }
+            ]
+        };
+
+        function getDB() {
+            const db = localStorage.getItem('luntian_master_db');
+            return db ? JSON.parse(db) : defaultDB;
+        }
+
+        function saveDB(db) {
+            localStorage.setItem('luntian_master_db', JSON.stringify(db));
+        }
+
+        // --- AUTH SYSTEM ---
+        let currentUser = null;
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const id = document.getElementById('login-id').value;
+            const pass = document.getElementById('login-pass').value;
+            const db = getDB();
+
+            const user = db.users.find(u => u.id === id && u.pass === pass);
+
+            if(user) {
+                currentUser = user;
+                initApp();
+            } else {
+                alert("Access Denied: Invalid Credentials");
+            }
+        }
+
+        function handleLogout() {
+            if(confirm("Terminate Session?")) location.reload();
+        }
+
+        function initApp() {
+            // UI Setup
+            document.getElementById('view-login').style.transform = 'translateY(-100%)';
+            document.getElementById('app-interface').classList.remove('hidden');
+            setTimeout(() => document.getElementById('app-interface').classList.remove('opacity-0'), 100);
+
+            // Populate User Info
+            document.getElementById('display-name').innerText = currentUser.name.toUpperCase();
+            document.getElementById('display-id').innerText = "ID: " + currentUser.id;
+            document.getElementById('card-name').innerText = currentUser.name.toUpperCase();
+            document.getElementById('card-id').innerText = currentUser.id;
+            document.getElementById('user-avatar').src = `https://ui-avatars.com/api/?name=${currentUser.name}&background=000&color=fff`;
+
+            // Admin Logic
+            if(currentUser.role === 'admin') {
+                document.getElementById('btn-admin').classList.remove('hidden');
+                document.getElementById('btn-tools').classList.add('hidden');
+                renderGuardianList();
+            }
+
+            // QR Code
+            document.getElementById("qrcode").innerHTML = "";
+            new QRCode(document.getElementById("qrcode"), {
+                text: "LETS:" + currentUser.id, width: 144, height: 144
+            });
+
+            renderFeed();
+        }
+
+        // --- ADMIN FUNCTIONS ---
+        function addGuardian(e) {
+            e.preventDefault();
+            const name = document.getElementById('new-name').value;
+            const id = document.getElementById('new-id').value.toUpperCase();
+            const pass = document.getElementById('new-pass').value;
+
+            const db = getDB();
+            if(db.users.find(u => u.id === id)) {
+                alert("ID already exists!");
+                return;
+            }
+
+            db.users.push({ name, id, pass, role: "guardian" });
+            saveDB(db);
+            renderGuardianList();
+            e.target.reset();
+            alert("Guardian Added!");
+        }
+
+        function removeGuardian(id) {
+            if(confirm("Revoke access for " + id + "?")) {
+                const db = getDB();
+                db.users = db.users.filter(u => u.id !== id);
+                saveDB(db);
+                renderGuardianList();
+            }
+        }
+
+        function renderGuardianList() {
+            const db = getDB();
+            const list = document.getElementById('guardian-list');
+            list.innerHTML = "";
+            
+            db.users.forEach(u => {
+                if(u.role === 'admin') return; // Don't list admin
+                list.innerHTML += `
+                    <div class="flex justify-between items-center bg-black/40 p-2 rounded border border-slate-800">
+                        <div>
+                            <p class="text-white text-xs font-bold">${u.name}</p>
+                            <p class="text-[10px] text-emerald-500">${u.id} | Pass: ${u.pass}</p>
+                        </div>
+                        <button onclick="removeGuardian('${u.id}')" class="text-red-500 hover:text-red-400"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+            });
+        }
+
+        function adminPost(e) {
+            e.preventDefault();
+            const msg = document.getElementById('admin-msg').value;
+            const type = document.getElementById('msg-type').value;
+            
+            const db = getDB();
+            db.posts.unshift({
+                author: currentUser.name,
+                type: type,
+                msg: msg,
+                time: "Just Now"
+            });
+            saveDB(db);
+            renderFeed();
+            e.target.reset();
+            switchTab('feed');
+        }
+
+        // --- FEED LOGIC ---
+        function renderFeed() {
+            const db = getDB();
+            const container = document.getElementById('feed-container');
+            container.innerHTML = "";
+
+            db.posts.forEach(post => {
+                let colorClass = "text-emerald-500";
+                if(post.type === "Alert") colorClass = "text-red-500";
+                if(post.type === "Intel") colorClass = "text-blue-500";
+
+                container.innerHTML += `
+                    <div class="bg-slate-900/50 border border-slate-800 rounded-xl p-4 animate-pulse-once">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center font-bold text-[10px]">${post.author.charAt(0)}</div>
+                                <div>
+                                    <h4 class="text-white font-bold text-sm">${post.author}</h4>
+                                    <p class="text-[10px] text-slate-500">${post.time} • <span class="${colorClass}">${post.type}</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-slate-300 text-sm">${post.msg}</p>
+                    </div>
+                `;
+            });
+        }
+
+        // --- TABS ---
+        function switchTab(tabName) {
+            ['feed', 'pass', 'admin', 'tools'].forEach(t => {
+                const el = document.getElementById('tab-' + t);
+                if(el) el.classList.add('hidden');
+                
+                const btn = document.getElementById('btn-' + t);
+                if(btn && t !== 'pass') btn.classList.replace('text-emerald-400', 'text-slate-500');
+                if(btn && t !== 'pass' && t === 'admin') btn.classList.replace('text-red-400', 'text-slate-500');
+            });
+
+            const activeTab = document.getElementById('tab-' + tabName);
+            if(activeTab) {
+                activeTab.classList.remove('hidden');
+                activeTab.classList.add('slide-in');
+            }
+
+            const activeBtn = document.getElementById('btn-' + tabName);
+            if(activeBtn && tabName !== 'pass') {
+                activeBtn.classList.replace('text-slate-500', tabName === 'admin' ? 'text-red-400' : 'text-emerald-400');
+            }
+        }
+    </script>
+</body>
+</html>
