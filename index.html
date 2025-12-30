@@ -11,7 +11,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* --- FUTURISTIC CORE --- */
+        /* CORE THEME */
         body { font-family: 'Outfit', sans-serif; background-color: #000505; color: #e2e8f0; overflow: hidden; }
         .font-tech { font-family: 'Rajdhani', sans-serif; letter-spacing: 0.05em; }
         
@@ -58,20 +58,6 @@
         }
         .input-tech::placeholder { color: rgba(16, 185, 129, 0.4); }
 
-        /* Glitch Text Effect Hover */
-        .glitch-hover:hover {
-            animation: glitch 0.3s cubic-bezier(.25, .46, .45, .94) both infinite;
-            color: #34d399;
-        }
-        @keyframes glitch {
-            0% { transform: translate(0); }
-            20% { transform: translate(-2px, 2px); }
-            40% { transform: translate(-2px, -2px); }
-            60% { transform: translate(2px, 2px); }
-            80% { transform: translate(2px, -2px); }
-            100% { transform: translate(0); }
-        }
-
         /* Utilities */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .fade-in { animation: fadeIn 0.8s ease-out forwards; }
@@ -106,7 +92,7 @@
                         <div class="scan-line"></div>
                     </div>
                 </div>
-                <h1 class="font-tech font-bold text-4xl text-white tracking-[0.1em] glitch-hover cursor-default">LUNTIAN<span class="text-emerald-500">.HUB</span></h1>
+                <h1 class="font-tech font-bold text-4xl text-white tracking-[0.1em] cursor-default">LUNTIAN<span class="text-emerald-500">.HUB</span></h1>
                 <p class="text-emerald-500/60 text-[10px] uppercase tracking-[0.4em] mt-1">Digital Ecosystem v2.0</p>
             </div>
 
@@ -269,9 +255,9 @@
             <button onclick="toggleIDCard()" class="absolute top-3 right-3 text-slate-500 hover:text-white"><i class="fas fa-times"></i></button>
             <div class="h-24 bg-[url('images/pattern.png')] bg-cover opacity-20 border-b border-emerald-500/30"></div>
             
-            <div class="px-6 pb-8 -mt-10 relative">
+            <div class="px-6 pb-8 -mt-10 relative text-center">
                 <div class="w-20 h-20 mx-auto rounded-full p-1 bg-black border-2 border-emerald-500 shadow-[0_0_15px_#10b981]">
-                    <img src="https://ui-avatars.com/api/?name=User&background=000&color=fff" id="modal-avatar" class="w-full h-full rounded-full">
+                    <img src="" id="modal-avatar" class="w-full h-full rounded-full">
                 </div>
                 
                 <div class="text-center mt-4">
@@ -289,7 +275,7 @@
     </div>
 
     <script>
-        // --- DATABASE LOGIC (LocalStorage) ---
+        // --- DATABASE LOGIC ---
         const defaultDB = {
             users: [
                 { name: "Alpha Leader", id: "LW-001", pass: "1234", role: "guardian" }
@@ -314,34 +300,36 @@
 
         function handleLogin(e) {
             e.preventDefault();
-            const idInput = document.getElementById('login-id').value.toUpperCase(); 
-            const passInput = document.getElementById('login-pass').value;
+            const idInput = document.getElementById('login-id').value.trim().toUpperCase(); 
+            const passInput = document.getElementById('login-pass').value.trim();
+            
+            // 1. Get Database (Includes both default and newly added users)
             const db = getDB();
 
-            // Check ADMIN Hardcoded (Root Access)
+            // 2. Check ADMIN Hardcoded (Root Access - Always works)
             if (idInput === 'COMMANDER' && passInput === 'LUNTIAN2030') {
                 currentUser = { name: "Commander Moises", id: "COMMANDER", role: "admin" };
                 enterSystem('admin');
                 return;
             }
 
-            // Check GUARDIANS in Database
-            const user = db.users.find(u => u.id === idInput && u.pass === passInput);
+            // 3. Check GUARDIANS in Database
+            // This searches the 'users' array from LocalStorage
+            const user = db.users.find(u => u.id === idInput);
 
             if (user) {
-                currentUser = user;
-                enterSystem('guardian');
+                if(user.pass === passInput) {
+                    currentUser = user;
+                    enterSystem('guardian');
+                } else {
+                    alert("ACCESS DENIED: Incorrect Passcode for " + idInput);
+                }
             } else {
-                // Shake effect for error
-                const form = e.target;
-                form.classList.add('animate-pulse');
-                setTimeout(() => form.classList.remove('animate-pulse'), 500);
-                alert("ACCESS DENIED. Invalid Identity Code.");
+                alert("ACCESS DENIED: Guardian ID not found.");
             }
         }
 
         function enterSystem(role) {
-            // UI Transition
             const loginView = document.getElementById('gateway-login');
             loginView.style.transform = 'scale(1.1)';
             loginView.style.opacity = '0';
@@ -353,11 +341,9 @@
                 setTimeout(() => dash.classList.remove('opacity-0'), 50);
             }, 600);
 
-            // Populate User Info
             document.getElementById('user-name').innerText = currentUser.name.toUpperCase();
             document.getElementById('user-role').innerText = role === 'admin' ? 'ADMIN_ROOT' : 'UNIT: ACTIVE';
             
-            // Show Specific Landing Page
             if (role === 'admin') {
                 document.getElementById('landing-admin').classList.remove('hidden');
                 renderGuardianList();
@@ -373,21 +359,27 @@
         // --- ADMIN FUNCTIONS ---
         function addGuardian(e) {
             e.preventDefault();
-            const name = document.getElementById('new-name').value;
-            const id = document.getElementById('new-id').value.toUpperCase();
-            const pass = document.getElementById('new-pass').value;
+            const name = document.getElementById('new-name').value.trim();
+            const id = document.getElementById('new-id').value.trim().toUpperCase();
+            const pass = document.getElementById('new-pass').value.trim();
 
             const db = getDB();
+            
+            // Duplicate Check
             if(db.users.find(u => u.id === id)) {
-                alert("ID already exists!");
+                alert("Error: ID " + id + " already exists!");
                 return;
             }
 
+            // Add new user to the array
             db.users.push({ name, id, pass, role: "guardian" });
+            
+            // SAVE TO LOCAL STORAGE
             saveDB(db);
+            
             renderGuardianList();
             e.target.reset();
-            alert("Guardian Authorized!");
+            alert(`Guardian ${id} Authorized!`);
             document.getElementById('admin-total-guardians').innerText = db.users.length;
         }
 
@@ -456,7 +448,7 @@
                 document.getElementById('modal-avatar').src = `https://ui-avatars.com/api/?name=${currentUser.name}&background=000&color=fff`;
                 
                 document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), { text: "LETS:" + currentUser.id, width: 80, height: 80 });
+                new QRCode(document.getElementById("qrcode"), { text: "LETS:" + currentUser.id, width: 100, height: 100 });
             }
         }
     </script>
