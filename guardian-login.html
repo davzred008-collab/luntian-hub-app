@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Guardian Login | LuntianHub</title>
+    <link rel="icon" type="image/png" href="images/lwowhite.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #020617; color: #e2e8f0; }
+        .font-tech { font-family: 'Rajdhani', sans-serif; }
+    </style>
+</head>
+<body class="h-screen flex flex-col justify-center items-center p-6 bg-black relative">
+
+    <a href="index.html" class="absolute top-6 left-6 text-slate-500 hover:text-white transition"><i class="fas fa-arrow-left"></i> Back</a>
+
+    <div class="w-full max-w-sm">
+        <div class="text-center mb-10">
+            <div class="w-16 h-16 bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/50">
+                <i class="fas fa-shield-alt text-2xl text-emerald-400"></i>
+            </div>
+            <h1 class="font-tech text-3xl text-white font-bold">GUARDIAN PORTAL</h1>
+            <p class="text-xs text-emerald-500/70 uppercase tracking-widest">Field Operations Access</p>
+        </div>
+
+        <form onsubmit="handleLogin(event)" class="space-y-4">
+            <div class="relative">
+                <i class="fas fa-id-card absolute left-4 top-3.5 text-slate-500"></i>
+                <input type="text" id="guardian-id" placeholder="Guardian ID (e.g. LW-01)" class="w-full bg-slate-900 border border-slate-800 text-white pl-12 pr-4 py-3 rounded-lg focus:border-emerald-500 outline-none font-tech tracking-wide transition placeholder-slate-600 uppercase">
+            </div>
+            <div class="relative">
+                <i class="fas fa-lock absolute left-4 top-3.5 text-slate-500"></i>
+                <input type="password" id="guardian-pass" placeholder="Passcode" class="w-full bg-slate-900 border border-slate-800 text-white pl-12 pr-4 py-3 rounded-lg focus:border-emerald-500 outline-none font-tech tracking-wide transition placeholder-slate-600">
+            </div>
+            <button type="submit" class="w-full bg-emerald-600 text-black font-bold py-4 rounded-lg font-tech text-xl tracking-wider hover:bg-emerald-500 transition shadow-[0_0_20px_rgba(16,185,129,0.3)] mt-2">
+                ACCESS ID
+            </button>
+        </form>
+
+        <p class="text-center text-xs text-slate-600 mt-8">Need help? Contact Command Center.</p>
+    </div>
+
+    <script>
+        function handleLogin(e) {
+            e.preventDefault();
+            const id = document.getElementById('guardian-id').value.toUpperCase();
+            const pass = document.getElementById('guardian-pass').value;
+            
+            // Basic Validation Simulation
+            if(id && pass) {
+                // In a real app, verify here. For prototype, we just redirect.
+                alert(`Welcome, Guardian ${id}. Loading Dashboard...`);
+                // Note: You would normally pass credentials or token here. 
+                // For this demo, we assume main index logic handles session or we redirect to a specific guardian view.
+                // Since this is a static site demo, we can redirect back to main index logic which handles the "view"
+                // Or ideally, this page would contain the Guardian-Specific Dashboard code.
+                window.location.href = "luntianhub.html"; // Assuming main logic is there or merged
+            } else {
+                alert("Please enter ID and Passcode.");
+            }
+        }
+    </script>
+</body>
+</html>
