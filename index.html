@@ -3,411 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Luntian Digital Gateway | Guardian Access</title>
+    <title>LuntianHub | Secure Gateway</title>
     <link rel="icon" type="image/png" href="images/lwowhite.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;600;700&family=Outfit:wght@300;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
     <style>
-        /* CORE THEME */
         body { font-family: 'Outfit', sans-serif; background-color: #020617; color: #e2e8f0; overflow: hidden; }
         .font-tech { font-family: 'Rajdhani', sans-serif; }
-        
-        /* SYSTEM COLORS */
-        .sys-icms { color: #3b82f6; border-color: #3b82f6; } 
-        .sys-lets { color: #eab308; border-color: #eab308; } 
-        .sys-mocs { color: #ef4444; border-color: #ef4444; } 
-        .sys-core { color: #10b981; border-color: #10b981; }
-
-        /* FX */
-        .glass-panel { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .neon-border { box-shadow: 0 0 10px rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); }
-        .scan-line { width: 100%; height: 2px; background: #10b981; position: absolute; top: 0; left: 0; animation: scan 3s infinite linear; box-shadow: 0 0 15px #10b981; }
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .slide-up { animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        .hidden { display: none !important; }
+        .neon-border { box-shadow: 0 0 15px rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.5); }
+        .slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
-<body class="h-screen flex flex-col">
+<body class="h-screen flex flex-col justify-center items-center bg-[url('https://images.unsplash.com/photo-1621451537084-482c73073a0f?ixlib=rb-4.0.3')] bg-cover bg-center">
+    
+    <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm"></div>
 
-    <!-- LOGIN GATEWAY -->
-    <section id="gateway-login" class="absolute inset-0 z-50 bg-slate-950 flex flex-col justify-center items-center p-6">
-        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?ixlib=rb-4.0.3')] bg-cover opacity-10"></div>
-        <div class="relative z-10 w-full max-w-sm text-center">
-            <div class="mb-8 relative inline-block">
-                <div class="w-24 h-24 rounded-full border-2 border-emerald-500/50 flex items-center justify-center bg-emerald-950/30 animate-pulse">
-                    <img src="images/logo.png" class="h-12 w-auto brightness-200">
-                </div>
-                <div class="absolute -top-2 -right-2 bg-emerald-500 text-black font-tech font-bold text-[10px] px-2 py-0.5 rounded">SECURE</div>
-            </div>
-            <h1 class="font-tech font-bold text-4xl text-white tracking-[0.2em] mb-1">LUNTIAN<span class="text-emerald-500">.GATEWAY</span></h1>
-            <p class="text-slate-500 text-xs uppercase tracking-widest mb-10">Integrated Digital Ecosystem</p>
-
-            <form onsubmit="handleLogin(event)" class="space-y-4 text-left">
-                <div>
-                    <label class="text-[10px] text-emerald-500/70 font-bold uppercase ml-1">Guardian ID</label>
-                    <input type="text" id="login-id" class="w-full bg-slate-900/80 border border-slate-800 text-white px-4 py-3 rounded-lg focus:border-emerald-500 outline-none font-tech tracking-wider uppercase" placeholder="ENTER ID">
-                </div>
-                <div>
-                    <label class="text-[10px] text-emerald-500/70 font-bold uppercase ml-1">Access Key</label>
-                    <input type="password" id="login-pass" class="w-full bg-slate-900/80 border border-slate-800 text-white px-4 py-3 rounded-lg focus:border-emerald-500 outline-none font-tech tracking-wider" placeholder="••••••••">
-                </div>
-                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 to-emerald-800 hover:from-emerald-500 hover:to-emerald-700 text-white font-bold py-3 rounded-lg font-tech text-lg tracking-widest transition shadow-lg shadow-emerald-900/20 mt-4">
-                    INITIALIZE SYSTEM
-                </button>
-            </form>
-            <div class="mt-8 flex justify-center gap-4 text-[10px] text-slate-600 font-mono">
-                <span>SYS: ONLINE</span>
-                <span>•</span>
-                <span>DB: LOCAL</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- SYSTEM DASHBOARD -->
-    <div id="system-dashboard" class="flex-1 flex flex-col hidden opacity-0 transition-opacity duration-700 bg-slate-950 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-slate-900 via-slate-950 to-black">
+    <div class="relative z-10 w-full max-w-4xl px-6">
         
-        <!-- COMMAND BAR -->
-        <header class="h-16 px-6 flex justify-between items-center border-b border-white/5 bg-slate-950/50 backdrop-blur-md sticky top-0 z-30">
-            <div class="flex items-center gap-3">
-                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_10px_#10b981]"></div>
-                <span class="font-tech text-xl text-white tracking-widest">GATEWAY</span>
+        <!-- Header -->
+        <div class="text-center mb-12 slide-up">
+            <div class="w-20 h-20 bg-emerald-900/50 rounded-full flex items-center justify-center mx-auto mb-6 neon-border">
+                <img src="images/logo.png" class="h-12 w-auto brightness-200">
             </div>
-            <div class="flex items-center gap-4">
-                <div class="text-right hidden sm:block">
-                    <p class="text-xs text-white font-bold" id="user-name">COMMANDER</p>
-                    <p class="text-[10px] text-emerald-500 font-mono" id="user-role">ADMIN_ROOT</p>
-                </div>
-                <button onclick="logout()" class="w-8 h-8 rounded bg-slate-900 border border-slate-700 flex items-center justify-center text-red-400 hover:border-red-500 transition"><i class="fas fa-power-off"></i></button>
-            </div>
-        </header>
+            <h1 class="font-tech font-bold text-4xl lg:text-6xl text-white tracking-[0.2em]">LUNTIAN<span class="text-emerald-500">.HUB</span></h1>
+            <p class="text-slate-400 text-sm uppercase tracking-widest mt-2">Select Your Access Level</p>
+        </div>
 
-        <!-- MAIN SCROLL VIEW -->
-        <main class="flex-1 overflow-y-auto no-scrollbar p-6 relative">
+        <!-- Role Selection -->
+        <div class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto slide-up" style="animation-delay: 0.2s;">
             
-            <!-- HOME VIEW -->
-            <div id="view-home" class="fade-in">
-                <!-- SYSTEM STATUS -->
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                    <div class="glass-panel p-4 rounded-xl border-l-2 border-blue-500">
-                        <p class="text-[10px] text-blue-400 font-bold mb-1">ICMS DISPATCH</p>
-                        <h3 class="text-2xl font-tech text-white">42</h3>
-                        <p class="text-[10px] text-slate-500">Active Assets</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-xl border-l-2 border-yellow-500">
-                        <p class="text-[10px] text-yellow-400 font-bold mb-1">LETS REVENUE</p>
-                        <h3 class="text-2xl font-tech text-white">₱12.5k</h3>
-                        <p class="text-[10px] text-slate-500">Daily Collection</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-xl border-l-2 border-red-500">
-                        <p class="text-[10px] text-red-400 font-bold mb-1">MOCS ALERTS</p>
-                        <h3 class="text-2xl font-tech text-white">03</h3>
-                        <p class="text-[10px] text-slate-500">Pending Review</p>
-                    </div>
-                    <div class="glass-panel p-4 rounded-xl border-l-2 border-emerald-500">
-                        <p class="text-[10px] text-emerald-400 font-bold mb-1">GUARDIAN FORCE</p>
-                        <h3 class="text-2xl font-tech text-white" id="guardian-count-display">--</h3>
-                        <p class="text-[10px] text-slate-500">Registered Units</p>
-                    </div>
-                </div>
+            <!-- Guardian Card -->
+            <a href="guardian-login.html" class="group bg-slate-900/60 border border-emerald-500/30 p-8 rounded-2xl hover:bg-emerald-900/20 hover:border-emerald-500 transition cursor-pointer text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <i class="fas fa-id-badge text-5xl text-emerald-500 mb-4 group-hover:scale-110 transition duration-300"></i>
+                <h3 class="font-tech text-2xl text-white font-bold mb-2">GUARDIAN ACCESS</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">For Field Units, Marshals, and Rangers. Access your Digital ID and Report Tools.</p>
+            </a>
 
-                <!-- MODULES -->
-                <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-4">Core Systems</h2>
-                <div class="grid md:grid-cols-3 gap-6 mb-8">
-                    <!-- ICMS -->
-                    <div class="glass-panel p-6 rounded-2xl hover:border-blue-500/50 transition group cursor-pointer relative overflow-hidden" onclick="openModule('ICMS')">
-                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition"></div>
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-lg bg-blue-900/30 border border-blue-500/30 flex items-center justify-center text-blue-400 text-xl"><i class="fas fa-network-wired"></i></div>
-                            <span class="text-[10px] bg-blue-900/50 text-blue-300 px-2 py-1 rounded border border-blue-500/20">v1.0</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-blue-400">ICMS</h3>
-                        <p class="text-xs text-slate-400 mb-4">Intelligent Cooperative Management. Dispatch fleets and manage cooperative assets.</p>
-                    </div>
-                    <!-- LETS -->
-                    <div class="glass-panel p-6 rounded-2xl hover:border-yellow-500/50 transition group cursor-pointer relative overflow-hidden" onclick="openModule('LETS')">
-                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-yellow-500/10 rounded-full blur-2xl group-hover:bg-yellow-500/20 transition"></div>
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-lg bg-yellow-900/30 border border-yellow-500/30 flex items-center justify-center text-yellow-400 text-xl"><i class="fas fa-file-invoice-dollar"></i></div>
-                            <span class="text-[10px] bg-yellow-900/50 text-yellow-300 px-2 py-1 rounded border border-yellow-500/20">v2.1</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-yellow-400">LETS</h3>
-                        <p class="text-xs text-slate-400 mb-4">Luntian Eco-Tax System. Digital revenue collection and transparency auditing.</p>
-                    </div>
-                    <!-- MOCS -->
-                    <div class="glass-panel p-6 rounded-2xl hover:border-red-500/50 transition group cursor-pointer relative overflow-hidden" onclick="openModule('MOCS')">
-                        <div class="absolute -right-4 -top-4 w-20 h-20 bg-red-500/10 rounded-full blur-2xl group-hover:bg-red-500/20 transition"></div>
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="w-12 h-12 rounded-lg bg-red-900/30 border border-red-500/30 flex items-center justify-center text-red-400 text-xl"><i class="fas fa-shield-virus"></i></div>
-                            <span class="text-[10px] bg-red-900/50 text-red-300 px-2 py-1 rounded border border-red-500/20">v1.0</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-white mb-2 group-hover:text-red-400">MOCS</h3>
-                        <p class="text-xs text-slate-400 mb-4">Marine Operation & Compliance. Surveillance and Quick Response Team dispatch.</p>
-                    </div>
-                </div>
+            <!-- Admin Card -->
+            <a href="admin-login.html" class="group bg-slate-900/60 border border-red-500/30 p-8 rounded-2xl hover:bg-red-900/20 hover:border-red-500 transition cursor-pointer text-center relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent opacity-0 group-hover:opacity-100 transition duration-500"></div>
+                <i class="fas fa-user-shield text-5xl text-red-500 mb-4 group-hover:scale-110 transition duration-300"></i>
+                <h3 class="font-tech text-2xl text-white font-bold mb-2">COMMAND CONSOLE</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">For Chairpersons, Admins, and System Overseers. Manage personnel and system status.</p>
+            </a>
 
-                <!-- LIVE FEED -->
-                <div class="glass-panel rounded-xl border-l-2 border-emerald-500 p-0 overflow-hidden">
-                    <div class="bg-black/40 px-4 py-3 border-b border-white/5 flex justify-between items-center">
-                        <h3 class="font-bold text-sm text-white"><i class="fas fa-satellite-dish text-emerald-500 mr-2"></i> COMMAND FEED</h3>
-                        <button class="text-xs text-emerald-400 hover:text-white" onclick="openAdminPost()">+ NEW ALERT</button>
-                    </div>
-                    <div id="command-feed" class="max-h-64 overflow-y-auto p-4 space-y-3 no-scrollbar"></div>
-                </div>
-            </div>
+        </div>
 
-            <!-- ADMIN VIEW (Manage Guardians) -->
-            <div id="view-admin" class="hidden fade-in pb-20">
-                <h2 class="text-emerald-400 font-tech uppercase tracking-widest mb-6 text-sm flex items-center gap-2">
-                    <i class="fas fa-users-cog"></i> MANAGE GUARDIAN FORCE
-                </h2>
-                
-                <!-- Add Form -->
-                <div class="glass-panel p-6 rounded-xl mb-6 border border-emerald-500/30">
-                    <h3 class="text-white font-bold text-sm mb-4">Authorize New Personnel</h3>
-                    <form onsubmit="addGuardian(event)" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="text" id="new-name" placeholder="Full Name" required class="bg-slate-900/50 border border-slate-700 rounded p-3 text-white text-xs outline-none focus:border-emerald-500">
-                        <input type="text" id="new-id" placeholder="Guardian ID (e.g. LW-001)" required class="bg-slate-900/50 border border-slate-700 rounded p-3 text-white text-xs uppercase outline-none focus:border-emerald-500">
-                        <input type="text" id="new-pass" placeholder="Assign Passcode" required class="bg-slate-900/50 border border-slate-700 rounded p-3 text-white text-xs outline-none focus:border-emerald-500">
-                        <button type="submit" class="bg-emerald-600 text-white rounded p-3 text-xs font-bold hover:bg-emerald-500 transition shadow-lg">AUTHORIZE BADGE</button>
-                    </form>
-                </div>
-
-                <!-- Guardian List -->
-                <div class="space-y-2" id="guardian-list">
-                    <!-- JS Injects Here -->
-                </div>
-            </div>
-
-        </main>
-
-        <!-- GLOBAL FOOTER -->
-        <div class="h-16 border-t border-white/10 bg-slate-950 flex items-center justify-between px-6 z-30">
-            
-            <!-- Tab Buttons -->
-            <div class="flex gap-6">
-                <button onclick="switchView('home')" class="text-emerald-400 hover:text-white transition flex flex-col items-center">
-                    <i class="fas fa-home text-lg"></i>
-                </button>
-                <button onclick="toggleIDCard()" class="text-slate-500 hover:text-emerald-400 transition flex flex-col items-center">
-                    <i class="fas fa-id-card text-lg"></i>
-                </button>
-                <!-- Admin Only Button -->
-                <button id="btn-admin-tab" onclick="switchView('admin')" class="hidden text-slate-500 hover:text-red-400 transition flex flex-col items-center">
-                    <i class="fas fa-user-shield text-lg"></i>
-                </button>
-            </div>
-
-            <p class="text-[10px] text-slate-600 font-mono hidden md:block">SECURE CONNECTION // TLS 1.3</p>
+        <div class="mt-12 text-center text-[10px] text-slate-600 font-mono slide-up" style="animation-delay: 0.4s;">
+            SECURE SYSTEM v2.0 • AUTHORIZED PERSONNEL ONLY
         </div>
 
     </div>
 
-    <!-- MODULE OVERLAY -->
-    <div id="module-overlay" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-lg hidden flex flex-col items-center justify-center p-8">
-        <i class="fas fa-cogs text-6xl text-slate-700 mb-6 animate-spin-slow"></i>
-        <h2 id="module-title" class="text-3xl font-tech text-white mb-2">SYSTEM LOADING</h2>
-        <p class="text-slate-400 text-sm mb-8 text-center max-w-md">Connecting to Luntian Digital Backbone... <br>This module will be fully operational in Phase 2.</p>
-        <button onclick="closeModule()" class="border border-white/20 text-white px-8 py-2 rounded-lg hover:bg-white hover:text-black transition">RETURN TO GATEWAY</button>
-    </div>
-
-    <!-- DIGITAL ID MODAL -->
-    <div id="id-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-6 slide-up">
-        <div class="w-full max-w-sm bg-slate-900 border border-emerald-500/30 rounded-2xl overflow-hidden relative">
-            <button onclick="toggleIDCard()" class="absolute top-4 right-4 text-slate-500 hover:text-white"><i class="fas fa-times"></i></button>
-            <div class="h-32 bg-gradient-to-br from-emerald-800 to-black relative">
-                <div class="absolute bottom-0 left-0 w-full h-full bg-[url('images/pattern.png')] opacity-10"></div>
-                <div class="absolute -bottom-8 left-6 w-20 h-20 rounded-full border-4 border-slate-900 bg-slate-800 overflow-hidden">
-                    <img src="https://ui-avatars.com/api/?name=Admin&background=000&color=fff" id="modal-avatar" class="w-full h-full">
-                </div>
-            </div>
-            <div class="pt-10 px-6 pb-6">
-                <h2 class="text-2xl font-tech text-white" id="modal-name">COMMANDER</h2>
-                <p class="text-xs text-emerald-500 uppercase tracking-widest mb-6" id="modal-role">System Administrator</p>
-                <div class="bg-white p-2 rounded-lg inline-block mb-4"><div id="qrcode"></div></div>
-                <p class="text-[10px] text-slate-500 font-mono text-center">ID: <span id="modal-id">LUNTIAN-ROOT-001</span></p>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // --- DATABASE LOGIC (LocalStorage) ---
-        const defaultDB = {
-            users: [
-                { name: "Commander Moises", id: "COMMANDER", pass: "LUNTIAN2030", role: "admin" }
-            ],
-            posts: [
-                { sys: 'MOCS', msg: 'Patrol Boat Alpha deployed to Twin Reef.', time: '10m ago', color: 'text-red-400' },
-                { sys: 'LETS', msg: 'Daily remittance from Tourist Center received.', time: '1h ago', color: 'text-yellow-400' },
-            ]
-        };
-
-        function getDB() {
-            const db = localStorage.getItem('luntian_hub_db');
-            return db ? JSON.parse(db) : defaultDB;
-        }
-
-        function saveDB(db) {
-            localStorage.setItem('luntian_hub_db', JSON.stringify(db));
-        }
-
-        // --- AUTH LOGIC ---
-        let currentUser = null;
-
-        function handleLogin(e) {
-            e.preventDefault();
-            const idInput = document.getElementById('login-id').value.toUpperCase(); // Force Uppercase
-            const passInput = document.getElementById('login-pass').value;
-            const db = getDB();
-
-            // 1. Check DB Users
-            const user = db.users.find(u => u.id === idInput && u.pass === passInput);
-
-            if (user) {
-                currentUser = user;
-                enterSystem();
-            } else {
-                alert("ACCESS DENIED. Invalid Credentials.");
-            }
-        }
-
-        function enterSystem() {
-            // UI Transition
-            document.getElementById('gateway-login').classList.add('fade-out');
-            setTimeout(() => {
-                document.getElementById('gateway-login').classList.add('hidden');
-                document.getElementById('system-dashboard').classList.remove('hidden');
-                document.getElementById('system-dashboard').classList.add('fade-in');
-            }, 500);
-
-            // Populate User Info
-            document.getElementById('user-name').innerText = currentUser.name.toUpperCase();
-            document.getElementById('user-role').innerText = currentUser.role === 'admin' ? 'ADMIN_ROOT' : 'UNIT: ACTIVE';
-            
-            // Show Admin Tab if Admin
-            if(currentUser.role === 'admin') {
-                document.getElementById('btn-admin-tab').classList.remove('hidden');
-                renderGuardianList();
-            }
-
-            // Load Data
-            document.getElementById('guardian-count-display').innerText = getDB().users.length;
-            renderFeed();
-        }
-
-        function logout() { location.reload(); }
-
-        // --- ADMIN FUNCTIONS ---
-        function addGuardian(e) {
-            e.preventDefault();
-            const name = document.getElementById('new-name').value;
-            const id = document.getElementById('new-id').value.toUpperCase();
-            const pass = document.getElementById('new-pass').value;
-
-            const db = getDB();
-            if(db.users.find(u => u.id === id)) {
-                alert("ID already exists!");
-                return;
-            }
-
-            db.users.push({ name, id, pass, role: "guardian" });
-            saveDB(db);
-            renderGuardianList();
-            e.target.reset();
-            alert("Guardian Authorized!");
-            document.getElementById('guardian-count-display').innerText = db.users.length;
-        }
-
-        function deleteGuardian(id) {
-            if(id === 'COMMANDER') { alert("Cannot delete Root Admin."); return; }
-            if(confirm("Revoke access for " + id + "?")) {
-                const db = getDB();
-                db.users = db.users.filter(u => u.id !== id);
-                saveDB(db);
-                renderGuardianList();
-                document.getElementById('guardian-count-display').innerText = db.users.length;
-            }
-        }
-
-        function renderGuardianList() {
-            const db = getDB();
-            const list = document.getElementById('guardian-list');
-            list.innerHTML = "";
-            
-            db.users.forEach(u => {
-                list.innerHTML += `
-                    <div class="flex justify-between items-center bg-slate-900/50 p-3 rounded border border-slate-800">
-                        <div>
-                            <p class="text-white text-xs font-bold">${u.name}</p>
-                            <p class="text-[10px] text-emerald-500 font-mono">${u.id} <span class="text-slate-600">|</span> ${u.pass}</p>
-                        </div>
-                        ${u.role !== 'admin' ? `<button onclick="deleteGuardian('${u.id}')" class="text-red-500 hover:text-white"><i class="fas fa-trash"></i></button>` : ''}
-                    </div>
-                `;
-            });
-        }
-
-        function openAdminPost() {
-            const msg = prompt("Broadcast Message to Network:");
-            if(msg) {
-                const db = getDB();
-                db.posts.unshift({ sys: 'ADMIN', msg: msg, time: 'Just Now', color: 'text-emerald-400' });
-                saveDB(db);
-                renderFeed();
-            }
-        }
-
-        // --- GENERAL LOGIC ---
-        function renderFeed() {
-            const db = getDB();
-            document.getElementById('command-feed').innerHTML = db.posts.map(item => `
-                <div class="flex gap-3 items-start border-b border-white/5 pb-2 last:border-0">
-                    <span class="font-mono text-[10px] ${item.color} font-bold w-10">${item.sys}</span>
-                    <div class="flex-1">
-                        <p class="text-slate-300 text-xs">${item.msg}</p>
-                        <p class="text-[9px] text-slate-600 mt-1">${item.time}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function switchView(view) {
-            document.getElementById('view-home').classList.add('hidden');
-            document.getElementById('view-admin').classList.add('hidden');
-            document.getElementById('view-' + view).classList.remove('hidden');
-            document.getElementById('view-' + view).classList.add('fade-in');
-        }
-
-        function toggleIDCard() {
-            const modal = document.getElementById('id-modal');
-            const hidden = modal.classList.toggle('hidden');
-            
-            if(!hidden) {
-                // Populate Modal Data
-                document.getElementById('modal-name').innerText = currentUser.name.toUpperCase();
-                document.getElementById('modal-role').innerText = currentUser.role === 'admin' ? 'System Administrator' : 'Authorized Guardian';
-                document.getElementById('modal-id').innerText = currentUser.id;
-                document.getElementById('modal-avatar').src = `https://ui-avatars.com/api/?name=${currentUser.name}&background=000&color=fff`;
-                
-                // QR
-                document.getElementById("qrcode").innerHTML = "";
-                new QRCode(document.getElementById("qrcode"), { text: "LETS:" + currentUser.id, width: 100, height: 100 });
-            }
-        }
-
-        function openModule(name) { 
-            document.getElementById('module-title').innerText = name + " SYSTEM";
-            document.getElementById('module-overlay').classList.remove('hidden');
-        }
-        function closeModule() { document.getElementById('module-overlay').classList.add('hidden'); }
-
-    </script>
 </body>
 </html>
